@@ -13,6 +13,7 @@ const getWaetherData = (infoType, searchParams) => {
 const iconUrl = (icon) => `https://openweathermap.org/img/wn/${icon}@2x.png`
 
 const formatToLocalTime = (secs, offset, format = "cccc, dd LLL yyyy' | Local Time: 'hh:mm a") => DateTime.fromSeconds(secs + offset, {zone: 'utc'}).toFormat(format)
+const kelvinToCelsius = (tempKelvin) => tempKelvin - 273.15;
 
 const formatCurrent = (data) => {
     const {
@@ -30,20 +31,20 @@ const formatCurrent = (data) => {
      const formattedLoacalTime = formatToLocalTime(dt, timezone);
 
      return {
-        temp, 
-        feels_like,
-        temp_min,
-        temp_max,
+        temp: kelvinToCelsius(temp), 
+        feels_like: kelvinToCelsius(feels_like),
+        temp_min: kelvinToCelsius(temp_min),
+        temp_max: kelvinToCelsius(temp_max),
         humidity,
         name,
         country,
-        sunrise: formatToLocalTime(sunrise, timezone, 'hh:mm:a'),
-        sunset: formatToLocalTime(sunset, timezone, 'hh:mm:a'),
+        sunrise: formatToLocalTime(sunrise, timezone, 'hh:mm a'),
+        sunset: formatToLocalTime(sunset, timezone, 'hh:mm a'),
         speed,
         details, 
         icon: iconUrl(icon),
         formattedLoacalTime,
-        dt,
+        dt: formatToLocalTime(dt, timezone, 'hh:mm:a'),
         timezone,
         lat,
         lon
@@ -52,9 +53,9 @@ const formatCurrent = (data) => {
 
 const formatForecastWeather = (secs, offset, data) => {
 
-    const hourly = data.filter((f) => f.dt > secs).slice(0, 5)
+    const hourly = data.filter((f) => f.dt_txt > secs).slice(0, 5)
     .map((f) => ({
-        temp: f.main.temp,
+        temp: kelvinToCelsius(f.main.temp),
         title: formatToLocalTime(f.dt, offset, "hh:mm a"),
         icon: iconUrl(f.weather[0].icon),
         data: f.dt_txt
@@ -62,13 +63,13 @@ const formatForecastWeather = (secs, offset, data) => {
 
     const daily = data.filter((f) => f.dt_txt.slice(-8) === "00:00:00")
     .map((f) => ({
-        temp: f.main.temp,
+        temp: kelvinToCelsius(f.main.temp),
         title: formatToLocalTime(f.dt, offset, "ccc"),
         icon: iconUrl(f.weather[0].icon),
         data: f.dt_txt
     }))
 
-    return {daily, hourly};
+    return {hourly, daily};
 }
 
 const getFormattedWeatherData = async (searchParams) => {

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import HeaderBtns from './components/HeaderBtns'
 import Input from './components/Input'
 import TimeandLoc from './components/TimeandLoc'
@@ -8,21 +8,35 @@ import getFormattedWeatherData from './services/WeatherService'
 
 function App() {
 
-  const getWeather = async () => {
-    const data = await getFormattedWeatherData({q: "Sydney"});
-    console.log(data);
-  }
+  const [query, setQuery] = useState({q: "Tokyo"})
+  const [units, setUnits] = useState('metric');
+  const [weather, setWeather] = useState(null);
 
-  getWeather();
+  const getWeather = async () => {
+     await getFormattedWeatherData(query, units).then((data) => 
+    {setWeather(data); 
+      console.log(data)   
+    })
+  };
+
+  useEffect(() => {
+    getWeather()
+  }, [query, units])
 
   return (
     <div className='mx-auto max-w-screen-lg mt-4 py-5 px-32 bg-gradient-to-br shadow-xl shadow-gray-400 from-cyan-600 to-blue-700'>
-      <HeaderBtns />
+      <HeaderBtns setQuery = {setQuery} />
       <Input />
-      <TimeandLoc />
-      <TempAndDets />
-      <Forecast />
-      <Forecast />
+
+      {weather && (
+    <>  
+     <TimeandLoc weather={weather} />
+     <TempAndDets weather = {weather} />
+     <Forecast title = {'3 Hours Step Forecast'} data = {weather.hourly} />
+     <Forecast title = {'3 Days Step Forecast'} data = {weather.daily}/>
+     </>
+      )}
+ 
     </div>
   )
 }

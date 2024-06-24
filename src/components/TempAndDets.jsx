@@ -9,25 +9,25 @@ import { MdKeyboardArrowDown } from "react-icons/md";
 
 
 
-function TempAndDets() {
+function TempAndDets({weather: {icon, temp, details, feels_like, humidity, speed, sunset, sunrise, temp_max, temp_min}}) {
 
     const verticalDetails = [
         {
             Icon: LiaThermometerEmptySolid,
             title: "Real Feel",
-            value: '35°',
+            value: `${feels_like.toFixed()}°C`,
             id: 1
         },
         {
             Icon: BiSolidDropletHalf,
-            title: "Real Feel",
-            value: '34%',
+            title: "Humdity",
+            value: `${humidity}%`,
             id: 2
         },
         {
             Icon: FiWind,
-            title: "Real Feel",
-            value: '11 km/hr',
+            title: "Wind",
+            value: `${speed.toFixed()} km/hr`,
             id: 3
         }
     ];
@@ -35,25 +35,25 @@ function TempAndDets() {
         {
             Icon: GiSunrise,
             title: "Sunrise",
-            value: '05:33 AM',
+            value: `${sunrise}`,
             id: 1
         },
         {
             Icon: GiSunset,
             title: "Sunset",
-            value: '08:33 PM',
+            value: `${sunset}`,
             id: 2
         },
         {
             Icon: MdKeyboardArrowUp,
             title: "High",
-            value: '37°',
+            value: `${temp_max.toFixed()}°C`,
             id: 3
         },
         {
             Icon: MdKeyboardArrowDown,
             title: "Low",
-            value: '7°',
+            value: `${temp_min.toFixed()}°C`,
             id: 4
         }
     ];
@@ -61,12 +61,12 @@ function TempAndDets() {
   return (
     <div>
         <div className=" flex items-center justify-center py-6 text-xl text-cyan-300">
-        <p>Rain</p>
+        <p>{details}</p>
         </div>
 
         <div className='flex flex-row items-center justify-between'>
-        <img src="https://openweathermap.org/img/wn/01d@2x.png" />
-        <p className='text-5xl'>34°</p>
+        <img src= {icon} />
+        <p className='text-5xl'>{temp.toFixed()}°C</p>
 
         <div className='flex flex-col justify-start items-start'>
         {verticalDetails.map((details) => (
