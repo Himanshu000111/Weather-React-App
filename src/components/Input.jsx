@@ -1,16 +1,24 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { CiSearch } from "react-icons/ci";
 import { MdLocationSearching } from "react-icons/md";
 
-function Input() {
+function Input({setQuery, setUnits}) {
+  const [city, setCity] = useState("")
+  const handleSearchClick = () => 
+    {
+     if (city !== "") setQuery({q: city});
+    };
   return (
     <div className='flex justify-center items-center w-full'>
         <div className='flex justify-center items-center flex-row w-3/4 space-x-4'>
-            <input type='search' placeholder='search your city' 
+            <input type='search'
+             value={city} 
+             placeholder='search your city'
+             onChange={(e) => (setCity(e.currentTarget.value))}
             className='w-full text-gray-500 text-xl font-light p-2 shadow-xl capitalize focus: outline-none placeholder:lowercase' />
         
 
-        <CiSearch size={30} className='cursor-pointer transition ease-out hover:scale-125'/>
+        <CiSearch size={30} onClick={handleSearchClick} className='cursor-pointer transition ease-out hover:scale-125'/>
 
         <MdLocationSearching size={30} className='cursor-pointer transition ease-out hover:scale-125' />
         </div>
