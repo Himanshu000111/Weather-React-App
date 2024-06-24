@@ -8,6 +8,15 @@ function Input({setQuery, setUnits}) {
     {
      if (city !== "") setQuery({q: city});
     };
+
+    const handleGeolocation = () => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition((position) => {
+          const {longitude, latitude} = position.coords
+          setQuery({lat: latitude, lon: longitude })
+        })
+      }
+    }
   return (
     <div className='flex justify-center items-center w-full'>
         <div className='flex justify-center items-center flex-row w-3/4 space-x-4'>
@@ -20,7 +29,7 @@ function Input({setQuery, setUnits}) {
 
         <CiSearch size={30} onClick={handleSearchClick} className='cursor-pointer transition ease-out hover:scale-125'/>
 
-        <MdLocationSearching size={30} className='cursor-pointer transition ease-out hover:scale-125' />
+        <MdLocationSearching size={30} onClick={handleGeolocation} className='cursor-pointer transition ease-out hover:scale-125' />
         </div>
 
         <div className='flex flex-row w-1/4 items-center justify-center'> 
